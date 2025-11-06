@@ -1,0 +1,187 @@
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+// user module 
+model Role {
+    id     String @id @default(auto()) @map("_id") @db.ObjectId()
+    title  String @unique
+    scopes Json
+
+    createdAt DateTime
+    updatedAt DateTime
+    User      User[]
+}
+
+model User {
+    id       String  @id @default(auto()) @map("_id") @db.ObjectId
+    phoneNo  String
+    username String
+    image    Json?
+    email    String  @unique
+    password String
+    roleId   String  @db.ObjectId
+    role     Role    @relation(fields: [roleId], references: [id])
+    isActive Boolean @default(false)
+
+    // Common fields for all users
+    dateOfBirth      DateTime?
+    gender           PatientGender?
+    address          String?
+    emergencyContact String?
+
+    // Doctor specific fields
+    specialization Specialization?
+    licenseNumber  String?
+
+    // Patient specific fields
+    bloodGroup String?
+
+    createdAt    DateTime
+    updatedAt    DateTime
+    AccessToken  AccessToken[]
+    RefreshToken RefreshToken[]
+    Room         Room[]
+
+    // Relations
+    DoctorSchedules       DoctorSchedule[] @relation("DoctorSchedules")
+    CaseRecordsAsDoctor   CaseRecord[]     @relation("DoctorCaseRecords")
+    CaseRecordsAsPatient  CaseRecord[]     @relation("PatientCaseRecords")
+    AppointmentsAsDoctor  Appiontment[]    @relation("DoctorAppointments")
+    AppointmentsAsPatient Appiontment[]    @relation("PatientAppointments")
+}
+
+model AccessToken {
+    id        String    @id @default(auto()) @map("_id") @db.ObjectId
+    userId    String    @db.ObjectId
+    users     User      @relation(fields: [userId], references: [id])
+    scopes    Json
+    revokedAt DateTime?
+    expiresAt DateTime
+
+    createdAt DateTime
+    updatedAt DateTime
+}
+
+model RefreshToken {
+    id        String    @id @default(auto()) @map("_id") @db.ObjectId
+    userId    String    @db.ObjectId
+    users     User      @relation(fields: [userId], references: [id])
+    token     String    @unique
+    revokedAt DateTime?
+    expiresAt DateTime
+
+    createdAt DateTime
+    updatedAt DateTime
+}
+
+// doctor module 
+
+model DoctorSchedule {
+    id           String        @id @default(auto()) @map("_id") @db.ObjectId
+    doctorId     String        @db.ObjectId
+    doctor       User          @relation("DoctorSchedules", fields: [doctorId], references: [id])
+    roomId       String        @db.ObjectId
+    room         Room          @relation(fields: [roomId], references: [id])
+    dayOfTheWeek DayOfTheWeeks
+    startTime    String
+    endTime      String
+    slotDuration String
+    isActive     Boolean       @default(false)
+
+    createdAt DateTime
+    updatedAt DateTime
+}
+
+model Room {
+    id             String           @id @default(auto()) @map("_id") @db.ObjectId
+    name           String
+    roomNo         String
+    floor          String
+    staffId        String           @db.ObjectId
+    staff          User             @relation(fields: [staffId], references: [id])
+    isActive       Boolean          @default(false)
+    DoctorSchedule DoctorSchedule[]
+    Appiontment    Appiontment[]
+
+    createdAt DateTime
+    updatedAt DateTime
+}
+
+model CaseRecord {
+    id             String   @id @default(auto()) @map("_id") @db.ObjectId
+    visitDate      DateTime
+    cheifCompliant String
+    diagonsis      String
+    prescription   String
+    note           String
+    followDate     DateTime
+    vital          Json?
+
+    patientId     String @db.ObjectId
+    doctorId      String @db.ObjectId
+    appiontmentId String @db.ObjectId
+
+    patient      User        @relation("PatientCaseRecords", fields: [patientId], references: [id])
+    doctor       User        @relation("DoctorCaseRecords", fields: [doctorId], references: [id])
+    appiontement Appiontment @relation(fields: [appiontmentId], references: [id])
+
+    createdAt DateTime
+    updatedAt DateTime
+}
+
+model Appiontment {
+    id              String            @id @default(auto()) @map("_id") @db.ObjectId
+    patientId       String            @db.ObjectId
+    patient         User              @relation("PatientAppointments", fields: [patientId], references: [id])
+    roomId          String            @db.ObjectId
+    room            Room              @relation(fields: [roomId], references: [id])
+    doctorId        String            @db.ObjectId
+    doctor          User              @relation("DoctorAppointments", fields: [doctorId], references: [id])
+    appiontmentDate DateTime
+    startTime       String
+    endTime         String
+    reasonForVisit  String?
+    status          AppiontmentStatus @default(CHECKED_IN)
+    CaseRecord      CaseRecord[]
+
+    createdAt DateTime
+    updatedAt DateTime
+}
+
+enum Specialization {
+    GENERAL_PHYSICIAN
+    ORTHOPEDIC
+    ENT
+    DENTIST
+    CARDIOLOGIST
+    DERMATOLOGIST
+    PEDIATRICIAN
+    GYNECOLOGIST
+}
+
+enum DayOfTheWeeks {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+}
+
+enum PatientGender {
+    MALE
+    FEMALE
+    OTHERS
+}
+
+enum AppiontmentStatus {
+    BOOKED
+    CHECKED_IN
+    COMPLETED
+    CANCELLED
+}
