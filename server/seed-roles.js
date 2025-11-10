@@ -1,7 +1,7 @@
 import prisma from './config/prisma.js'
 
 async function seedRoles() {
-  console.log('🌱 Seeding roles...')
+  console.log(' Seeding roles...')
 
   try {
     // Create roles
@@ -38,12 +38,12 @@ async function seedRoles() {
       },
     })
 
-    console.log('✅ Roles created successfully!')
+    console.log(' Roles created successfully!')
     console.log(`   - Patient Role: ${patientRole.id}`)
     console.log(`   - Doctor Role: ${doctorRole.id}`)
     console.log(`   - Staff Role: ${staffRole.id}`)
   } catch (error) {
-    console.error('❌ Error seeding roles:', error)
+    console.error(' Error seeding roles:', error)
     throw error
   }
 }

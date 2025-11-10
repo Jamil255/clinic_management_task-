@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  clinic-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clinic-server
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: always
+    environment:
+      - NODE_ENV=production

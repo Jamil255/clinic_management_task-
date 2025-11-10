@@ -38,6 +38,9 @@ app.use(cookieParser())
 app.get('/', (req, res) => {
   res.json({ message: 'Clinic Management System API' })
 })
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK' })
+})
 
 app.use('/api/auth', authRoutes)
 app.use('/api/doctors', doctorRoutes)

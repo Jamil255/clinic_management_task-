@@ -125,14 +125,14 @@ const Appointments = () => {
 
   const fetchPatients = async () => {
     try {
-      const response = await patientAPI.getAll({ limit: 100 })
+      const response = await patientAPI.getAll({ limit: 10 })
       setPatients(response.data.data.patients)
     } catch (error) {}
   }
 
   const fetchDoctors = async () => {
     try {
-      const response = await doctorAPI.getAll({ limit: 100 })
+      const response = await doctorAPI.getAll({ limit: 10 })
       setDoctors(response.data.data.doctors)
     } catch (error) {}
   }

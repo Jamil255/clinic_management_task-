@@ -1,44 +1,38 @@
-import { useState, useEffect } from 'react'
 import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Chip,
-  Button,
-  CircularProgress,
-  Avatar,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Snackbar,
-  Alert,
-  useMediaQuery,
-  useTheme,
-  Paper,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-} from '@mui/material'
-import {
-  Person as PersonIcon,
-  MedicalServices as MedicalIcon,
-  Schedule as ScheduleIcon,
-  Room as RoomIcon,
   CalendarMonth as CalendarIcon,
+  MedicalServices as MedicalIcon,
+  Person as PersonIcon,
+  Room as RoomIcon,
+  Schedule as ScheduleIcon,
   AccessTime as TimeIcon,
 } from '@mui/icons-material'
-import { doctorAPI, appointmentAPI, roomAPI } from '../api/api'
+import {
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  Paper,
+  Snackbar,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
+import { useEffect, useState } from 'react'
+import { appointmentAPI, doctorAPI, roomAPI } from '../api/api'
 import { useAuth } from '../context/AuthContext'
-import { format } from 'date-fns'
 
 const daysOfWeek = [
   'MONDAY',
@@ -79,7 +73,7 @@ const DoctorListing = () => {
   const fetchDoctors = async () => {
     try {
       setLoading(true)
-      const response = await doctorAPI.getAll({ limit: 100 })
+      const response = await doctorAPI.getAll({ limit: 10 })
 
       // Filter only active doctors with active schedules
       const activeDoctors = response.data.data.doctors.filter(
@@ -91,7 +85,6 @@ const DoctorListing = () => {
 
       setDoctors(activeDoctors)
     } catch (error) {
-      
       setToast({
         open: true,
         message: 'Error loading doctors',
@@ -106,19 +99,15 @@ const DoctorListing = () => {
     try {
       const response = await roomAPI.getAll()
       setRooms(response.data.data || [])
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   }
 
   const fetchAppointments = async () => {
     try {
       // Fetch all appointments to check for booked schedules
-      const response = await appointmentAPI.getAll({ limit: 1000 })
+      const response = await appointmentAPI.getAll({ limit: 10 })
       setAppointments(response.data.data.appointments || [])
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   }
 
   // Check if a schedule is already booked (for the next occurrence)
@@ -257,7 +246,6 @@ const DoctorListing = () => {
       // Refresh appointments to update the UI
       fetchAppointments()
     } catch (error) {
-      
       setToast({
         open: true,
         message: error.response?.data?.message || 'Error booking appointment',
@@ -566,7 +554,11 @@ const DoctorListing = () => {
                   setFormData({ ...formData, appointmentDate: e.target.value })
                 }
                 InputLabelProps={{ shrink: true }}
+                inputProps={{
+                  min: new Date().toISOString().split('T')[0], // Prevent past dates
+                }}
                 helperText={`Please select a ${selectedSchedule.dayOfTheWeek}`}
+                required
                 sx={{
                   '& .MuiInputBase-root': { minHeight: 44 },
                 }}

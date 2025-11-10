@@ -85,7 +85,6 @@ export const getAllCaseRecords = async (req, res, next) => {
       )
     )
   } catch (error) {
-    
     next(new ApiError(500, 'Failed to fetch case records'))
   }
 }
@@ -139,7 +138,6 @@ export const getCaseRecordById = async (req, res, next) => {
 
     res.json(new ApiResponse(200, record, 'Case record retrieved successfully'))
   } catch (error) {
-    
     next(new ApiError(500, 'Failed to get case record'))
   }
 }
@@ -188,7 +186,7 @@ export const createCaseRecord = async (req, res, next) => {
       return next(
         new ApiError(
           400,
-          'Cannot create case record for this appointment status'
+          'Please change the appiontment status to CHECKED-IN before creating a case record'
         )
       )
     }
@@ -249,7 +247,6 @@ export const createCaseRecord = async (req, res, next) => {
       .status(201)
       .json(new ApiResponse(201, record, 'Case record created successfully'))
   } catch (error) {
-    
     next(new ApiError(500, 'Failed to create case record'))
   }
 }
@@ -319,7 +316,6 @@ export const updateCaseRecord = async (req, res, next) => {
 
     res.json(new ApiResponse(200, record, 'Case record updated successfully'))
   } catch (error) {
-    
     next(new ApiError(500, 'Failed to update case record'))
   }
 }
@@ -349,7 +345,6 @@ export const deleteCaseRecord = async (req, res, next) => {
 
     res.json(new ApiResponse(200, null, 'Case record deleted successfully'))
   } catch (error) {
-    
     next(new ApiError(500, 'Failed to delete case record'))
   }
 }

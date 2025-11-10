@@ -10,8 +10,8 @@ import {
 // Cookie options for development
 const getCookieOptions = (maxAge) => ({
   httpOnly: true,
-  secure: false, // false for localhost development
-  sameSite: 'lax', // lax for development, change to 'strict' in production
+  secure: false,
+  sameSite: 'lax',
   maxAge,
 })
 
@@ -131,17 +131,17 @@ export const login = async (req, res, next) => {
     })
 
     if (!user) {
-      throw new ApiError(401, 'Invalid credentials')
-    }
-
-    // Check password
-    const isPasswordValid = await comparePassword(password, user.password)
-    if (!isPasswordValid) {
-      throw new ApiError(401, 'Invalid credentials')
+      throw new ApiError(401, 'User is not found')
     }
 
     if (!user.isActive) {
       throw new ApiError(403, 'Account is inactive')
+    }
+
+    // Check password
+    const isPasswordValid = await comparePassword(password, user?.password)
+    if (!isPasswordValid) {
+      throw new ApiError(401, 'Invalid credentials')
     }
 
     // Generate tokens

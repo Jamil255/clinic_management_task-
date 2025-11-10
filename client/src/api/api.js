@@ -75,7 +75,7 @@ api.interceptors.response.use(
         return api(originalRequest)
       } catch (refreshError) {
         console.error(
-          '❌ Token refresh failed:',
+          ' Token refresh failed:',
           refreshError.response?.data || refreshError.message
         )
         isRefreshing = false
