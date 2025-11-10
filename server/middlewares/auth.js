@@ -44,7 +44,7 @@ export const authenticate = async (req, res, next) => {
       id: user.id,
       email: user.email,
       roleId: user.roleId,
-      role: user.role, // Send full role object with { title: '...' }
+      role: user.role,
       scopes: decoded.scopes,
     }
 

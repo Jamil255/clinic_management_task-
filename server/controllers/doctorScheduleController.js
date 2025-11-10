@@ -14,6 +14,7 @@ export const getAllSchedules = async (req, res, next) => {
     if (roomId) where.roomId = roomId
     if (dayOfTheWeek) where.dayOfTheWeek = dayOfTheWeek
     if (isActive !== undefined) where.isActive = isActive === 'true'
+    console.log(where, '........................')
 
     const [schedules, total] = await Promise.all([
       prisma.doctorSchedule.findMany({
@@ -59,7 +60,6 @@ export const getAllSchedules = async (req, res, next) => {
       )
     )
   } catch (error) {
-    
     next(new ApiError(500, 'Failed to get doctor schedules'))
   }
 }
@@ -98,7 +98,6 @@ export const getScheduleById = async (req, res, next) => {
 
     res.json(new ApiResponse(200, schedule, 'Schedule retrieved successfully'))
   } catch (error) {
-    
     next(new ApiError(500, 'Failed to get schedule'))
   }
 }
@@ -224,7 +223,8 @@ export const createSchedule = async (req, res, next) => {
       .status(201)
       .json(new ApiResponse(201, schedule, 'Schedule created successfully'))
   } catch (error) {
-    
+    console.log(error)
+
     next(new ApiError(500, 'Failed to create schedule'))
   }
 }
@@ -347,7 +347,6 @@ export const updateSchedule = async (req, res, next) => {
 
     res.json(new ApiResponse(200, schedule, 'Schedule updated successfully'))
   } catch (error) {
-    
     next(new ApiError(500, 'Failed to update schedule'))
   }
 }
@@ -373,7 +372,6 @@ export const deleteSchedule = async (req, res, next) => {
 
     res.json(new ApiResponse(200, null, 'Schedule deleted successfully'))
   } catch (error) {
-    
     next(new ApiError(500, 'Failed to delete schedule'))
   }
 }
@@ -440,7 +438,6 @@ export const getAvailableSlots = async (req, res, next) => {
       )
     )
   } catch (error) {
-    
     next(new ApiError(500, 'Failed to get available slots'))
   }
 }

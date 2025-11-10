@@ -5,8 +5,8 @@ import { hashPassword } from '../utils/password.js'
 export const getAllPatients = async (req, res, next) => {
   try {
     const { page = 1, limit = 10, search } = req.query
-    const userId = req.user.id // Get logged-in user ID
-    const userRole = req.user.role // Get logged-in user role (now full object with { title: '...' })
+    const userId = req.user.id
+    const userRole = req.user.role 
 
     // Get Patient role
     const patientRole = await prisma.role.findUnique({

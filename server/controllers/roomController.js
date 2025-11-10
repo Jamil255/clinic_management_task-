@@ -1,10 +1,10 @@
 import prisma from '../config/prisma.js'
-import { ApiError, ApiResponse } from '../utils/apiResponse.js'
+import { ApiResponse } from '../utils/apiResponse.js'
 
 export const getAllRooms = async (req, res, next) => {
   try {
     // Get user role from request (set by authenticate middleware)
-    const userRole = req.user?.role
+    const userRole = req.user?.role?.title || req.user?.role
 
     // Build where clause based on user role
     const whereClause = {}

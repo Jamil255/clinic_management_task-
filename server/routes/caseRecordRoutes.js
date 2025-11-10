@@ -7,7 +7,7 @@ import {
   updateCaseRecord,
   deleteCaseRecord,
 } from '../controllers/caseRecordController.js'
-import { authenticate } from '../middlewares/auth.js'
+import { authenticate, authorize } from '../middlewares/auth.js'
 
 // Get all case records
 router.get('/', authenticate, getAllCaseRecords)
@@ -16,12 +16,12 @@ router.get('/', authenticate, getAllCaseRecords)
 router.get('/:id', authenticate, getCaseRecordById)
 
 // Create new case record (Doctor/Staff only)
-router.post('/', authenticate, createCaseRecord)
+router.post('/', authenticate, authorize('Doctor', 'Staff'), createCaseRecord)
 
 // Update case record (Doctor/Staff only)
-router.put('/:id', authenticate, updateCaseRecord)
+router.put('/:id', authenticate, authorize('Doctor', 'Staff'), updateCaseRecord)
 
 // Delete case record (Staff only)
-router.delete('/:id', authenticate, deleteCaseRecord)
+router.delete('/:id', authenticate, authorize('Staff'), deleteCaseRecord)
 
 export default router

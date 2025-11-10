@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     
     try {
-      // Fetch profile from server using cookies only
       
       const response = await authAPI.getProfile()
       const userData = response.data.data
@@ -31,7 +30,7 @@ export const AuthProvider = ({ children }) => {
       setUser(userData)
     } catch (error) {
       // If profile fetch fails, user is not authenticated
-      console.error('❌ Auth check failed:', {
+      console.error('Auth check failed:', {
         status: error.response?.status,
         message: error.response?.data?.message,
       })
@@ -48,12 +47,12 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.login(credentials)
       const { user } = response.data.data
 
-      console.log('✅ Login successful:', {
+      console.log('Login successful:', {
         email: user.email,
         role: user.role.title,
       })
 
-      // Only set user state, cookies are handled by server
+      // Only set user state after successful login
       setUser(user)
 
       return { success: true }

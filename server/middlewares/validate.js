@@ -9,7 +9,7 @@ export const validate = (req, res, next) => {
       message: err.msg,
       value: err.value,
     }))
-    return next(new ApiError(400, 'Validation failed', formattedErrors))
+    return next(new ApiError(429, 'Validation failed', formattedErrors))
   }
   next()
 }
